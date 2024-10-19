@@ -22,6 +22,23 @@ const storage = multer.diskStorage({
     }
 })
 
+const upload = multer({ storage: storage }).single('file');
+
+app.post('/upload', (req, res) => {
+    try {
+        upload(req, res, (err) => {
+            if (err) {
+                return res.status(500).json(err)
+            }
+            filePath = req.file.path
+            res.status(200).json({message: "Uploaded successfully"})
+        })
+    } catch (error) {
+        res.send(500).json({err: 'Something went wrong'});
+        console.error(error)
+    }
+})
+
 app.listen(PORT, () => {
     console.log(`App is listening to PORT: ${PORT}`)
 })
