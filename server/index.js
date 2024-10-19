@@ -39,6 +39,24 @@ app.post('/upload', (req, res) => {
     }
 })
 
+app.post('/gemini', async (req, res) => {
+    try {
+        function fileToGenerativePart(path, mimeType) {
+            return {
+                inlineData: {
+                    data: Buffer.from(fs.readFileSync(path)).toString('base64'), mimeType
+                }
+            }
+        }
+        const prompt = req.body.message
+        const result = await model.generateContent([prompt, fileToGenerativePart(filePath, "image/jpeg")]);
+        const text = result.response.text();
+        res.send(text)
+    } catch (err) {
+        console.error(err)
+    }
+})
+
 app.listen(PORT, () => {
     console.log(`App is listening to PORT: ${PORT}`)
 })
