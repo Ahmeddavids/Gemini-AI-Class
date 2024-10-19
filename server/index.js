@@ -57,6 +57,16 @@ app.post('/gemini', async (req, res) => {
     }
 })
 
+app.post("/gemini/text", async(req, res)=>{
+    try{
+        const result = await model.generateContent(req.body.message);
+        res.status(200).send(result.response.text());
+    }catch(err){
+      console.error(err)
+      res.status(500).send(err.message)
+    }
+})
+
 app.listen(PORT, () => {
     console.log(`App is listening to PORT: ${PORT}`)
 })
