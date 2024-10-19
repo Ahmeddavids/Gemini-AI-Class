@@ -42,19 +42,29 @@ function App() {
     try{
       setLoading(true)
       if(!image){
-        const response = await axios.post('http://localhost:4040/gemini/text', JSON.stringify({message: value}), {headers: {"Content-Type": "application/json"}})
-        const data = await response?.data;
-        setMarkdownContent(data);
-        // console.log(response)
-        setResponse(data)
-        setLoading(false)
+        if (value.length <= 5){
+          setError('Add more charcaters to ask your question')
+          setLoading(false)
+        } else{
+          const response = await axios.post('http://localhost:4040/gemini/text', JSON.stringify({message: value}), {headers: {"Content-Type": "application/json"}})
+          const data = await response?.data;
+          setMarkdownContent(data);
+          // console.log(response)
+          setResponse(data)
+          setLoading(false)
+        }
       }else{
-      const response = await axios.post('http://localhost:4040/gemini', JSON.stringify({message: value}), {headers: {"Content-Type": "application/json"}})
-      const data = await response?.data;
-      setMarkdownContent(data);
-      // console.log(response)
-      setResponse(data)
-      setLoading(false)
+        if (value.length <= 5){
+          setError('Add more charcaters to ask your question')
+          setLoading(false)
+        }{
+          const response = await axios.post('http://localhost:4040/gemini', JSON.stringify({message: value}), {headers: {"Content-Type": "application/json"}})
+          const data = await response?.data;
+          setMarkdownContent(data);
+          // console.log(response)
+          setResponse(data)
+          setLoading(false)
+        }
       }
     }catch(err){
       console.error(err);
