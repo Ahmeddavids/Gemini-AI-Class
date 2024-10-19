@@ -73,7 +73,7 @@ function App() {
   return (
     <div className='theApp'>
       <header className='theHead'>
-        <h1>Cold AI</h1>
+        <h1>Davids AI</h1>
       </header>
       <main className="theMain">
       <div className='theContents'>
