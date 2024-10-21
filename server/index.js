@@ -31,10 +31,10 @@ app.post('/upload', (req, res) => {
                 return res.status(500).json(err)
             }
             filePath = req.file.path
-            res.status(200).json({message: "Uploaded successfully"})
+            res.status(200).json({ message: "Uploaded successfully" })
         })
     } catch (error) {
-        res.send(500).json({err: 'Something went wrong'});
+        res.send(500).json({ err: 'Something went wrong' });
         console.error(error)
     }
 })
@@ -57,15 +57,31 @@ app.post('/gemini', async (req, res) => {
     }
 })
 
-app.post("/gemini/text", async(req, res)=>{
-    try{
-        const result = await model.generateContent(req.body.message);
-        res.status(200).send(result.response.text());
-    }catch(err){
-      console.error(err)
-      res.status(500).send(err.message)
+app.post("/gemini/text", async (req, res) => {
+    try {
+        const result = await model.generateContentStream(req.body.message);
+
+        // Set headers for a chunked response
+        res.setHeader('Content-Type', 'text/plain');
+        res.setHeader('Transfer-Encoding', 'chunked');
+
+        // Stream chunks to the client as they come in
+        for await (const chunk of result.stream) {
+            const chunkText = chunk.text();
+
+            // Print text to the console and stream to the client
+            process.stdout.write(chunkText);
+            res.write(chunkText);
+        }
+
+        // End the response when streaming is finished
+        res.end();
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('An error occurred: ' + err.message);
     }
-})
+});
+
 
 app.listen(PORT, () => {
     console.log(`App is listening to PORT: ${PORT}`)
