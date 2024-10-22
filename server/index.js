@@ -70,7 +70,7 @@ app.post("/gemini/text", async (req, res) => {
             const chunkText = chunk.text();
 
             // Print text to the console and stream to the client
-            process.stdout.write(chunkText);
+            // process.stdout.write(chunkText);
             res.write(chunkText);
         }
 
